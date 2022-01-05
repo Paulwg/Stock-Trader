@@ -1,0 +1,599 @@
+[
+    {
+        "currency": "1INCH",
+        "id": "497c5778-e35c-452f-8f1f-ecc3c7a5dd3e",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "AAVE",
+        "id": "e2c3f5d2-7beb-40b1-938c-0647dc19fd29",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ACH",
+        "id": "6ff17b2a-8664-46a0-b154-a8d5b89d6a11",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ADA",
+        "id": "fd353a65-f3a2-44bd-b50c-c68e8bedb11e",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "AGLD",
+        "id": "dad594c8-9fc5-472c-8d5e-6589e1c360d9",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ALGO",
+        "id": "55ac20ab-5b69-4d38-9f72-512d4a59642c",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "AMP",
+        "id": "189c8bdc-3752-47e4-a57a-1cac0baff952",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ANKR",
+        "id": "0fb555e7-d1aa-4c3f-8b09-a1af4e79300e",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ARPA",
+        "id": "2a020c33-0a63-4554-85ca-5ee0b58ef47b",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ASM",
+        "id": "93746d34-bc6d-408f-bdc2-be266f5724c0",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ATOM",
+        "id": "5f4f15b9-309c-4956-aca8-1ac24bc9d312",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "AUCTION",
+        "id": "76db1a6a-e4cb-4c0a-9bc3-590eb959e131",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "AVAX",
+        "id": "ca16679e-b846-4bd3-9840-b655db499723",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "AXS",
+        "id": "bff81bb4-3636-4e81-82e1-69445782bff8",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "BADGER",
+        "id": "c1bd5530-5fd6-44db-8a9b-746f0f91f113",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "BAL",
+        "id": "cdf48c3d-45e6-4443-b833-aa77ec9b3a67",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "BAND",
+        "id": "38bc1ea5-16c8-4811-a13d-64c93caf0517",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "BAT",
+        "id": "e3bf4758-3b0b-4536-90e1-278c4328bd22",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "BCH",
+        "id": "d94301ae-7876-4d98-a509-99e976793734",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "BNT",
+        "id": "1b0e1bf4-6e01-4883-accf-671b133e9722",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "BOND",
+        "id": "631a872c-1b9a-430d-8edd-282e303bcaef",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "BTC",
+        "id": "a74fe1a9-fc5c-4c57-8c8e-85d47447651f",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "BTRST",
+        "id": "1afeebe0-5d24-492c-a20f-11c26567a5ca",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "CGLD",
+        "id": "9f4b94f2-6e3c-4c81-8c14-82ec52624d81",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "CHZ",
+        "id": "a96291ba-352c-47b2-9d07-7380cd7f2c09",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "CLV",
+        "id": "cb6e7893-a920-4d56-bde2-d62031f963ae",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "COMP",
+        "id": "2e564348-35e8-4d84-a9ea-23004da0a9d6",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "COTI",
+        "id": "f03a62a6-1cf9-4d4a-aa24-7eba4e9181e0",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "CRV",
+        "id": "c70aef38-4e7c-42eb-9322-c8d122515346",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "CTSI",
+        "id": "b77ec253-6274-4a50-8bba-408e24487ae8",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "CVC",
+        "id": "11ba3774-81e4-4d80-b0e9-ba36c08e42c1",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "DAI",
+        "id": "60c75b98-8c37-4f7d-81e3-67c9e829a8e3",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "DASH",
+        "id": "314a2d1c-33cc-4f7f-bf1a-79d58d1615eb",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "DDX",
+        "id": "0a38b549-4b0a-4404-bfe8-eb91aa7553db",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "DNT",
+        "id": "16c36c67-51ce-4bfb-8c09-33cbbe2d63b9",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "DOGE",
+        "id": "eef1b0e1-8765-4d36-9bef-e1ad288c50a0",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "DOT",
+        "id": "0e76b00c-568c-406a-9876-9fa293901cab",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ENJ",
+        "id": "fcb40607-b9e7-4218-b42d-f7e262105078",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "EOS",
+        "id": "78f31a65-9229-4e09-a9bc-d81c6e1a6a70",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ETC",
+        "id": "1ebe6ffe-5a5a-4a83-bc78-9f8d47281ca9",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ETH",
+        "id": "3ef9c1dc-2e9d-4b55-b733-12b0dbdb266b",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "FARM",
+        "id": "f0537b42-c64e-4ab1-adc8-f18a64d9d323",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "FET",
+        "id": "eac9da81-1dce-436a-b797-0a9db0814ac9",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "FIL",
+        "id": "b72ba118-98a7-460a-8685-37f266c553a4",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "FORTH",
+        "id": "2c59840d-a346-458b-b320-802fca413021",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "FX",
+        "id": "b180ae0b-f21c-4f90-b36e-fb76674db6be",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "GNT",
+        "id": "4d697c06-b6cd-423e-bf00-44bb9286ff97",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "GRT",
+        "id": "b982c271-6500-410b-8052-6aca97040e0c",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "GTC",
+        "id": "f68ae438-3c89-4795-b800-b295ebca6986",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ICP",
+        "id": "de1a7472-396a-4336-ae7b-5989d935f8c9",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "IOTX",
+        "id": "78aac39d-c727-463d-b008-73ba6304c1ed",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "JASMY",
+        "id": "ebba0f32-c94a-41bd-9f42-cd0c61d7b555",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "KEEP",
+        "id": "7038ec3b-d2d6-4890-9c1a-b6f6fae02853",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "KNC",
+        "id": "8a3adf08-aaf8-424b-b88d-d98fb9cdc313",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "KRL",
+        "id": "c930f872-1112-4fdb-b62f-38aff98e5a86",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "LCX",
+        "id": "cc693619-4b73-45c3-87c2-716375e6be8b",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "LINK",
+        "id": "b428e0d2-7731-4b99-a5dd-a7aa3f98c140",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "LOOM",
+        "id": "e94d95b1-3610-4a74-af41-6addb3ea52b1",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "LPT",
+        "id": "f572b8be-7094-486c-b14f-35c2a0faa361",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "LRC",
+        "id": "d1f88a19-4b19-48d8-a8fb-c0a3aa0caf66",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "LTC",
+        "id": "3f080d64-c749-40c4-b3dc-b2355ac1bd5f",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "MANA",
+        "id": "dc1dffc5-ca32-4ec3-b844-269ad95dcdf5",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "MASK",
+        "id": "a0529107-afdd-43f2-bea0-4c4adedf34ce",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "MATIC",
+        "id": "358c0004-7490-4252-a733-a511953beb1f",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "MIR",
+        "id": "4b4efcbf-745e-4dae-b427-e87003d2ba6c",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "MKR",
+        "id": "b6bbd589-9833-4acd-b066-ea28d7a43563",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "MLN",
+        "id": "944abee0-a77d-4dee-a8a0-8dfa6c071de1",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "NKN",
+        "id": "acde2c42-193f-4531-8c8b-84c122ede642",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "NMR",
+        "id": "cab09439-0454-49d9-af34-f840d5dcd0fb",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "NU",
+        "id": "61ea2324-f28f-4a2b-ae11-3f89fd268de5",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "OGN",
+        "id": "a29cc0e9-6a05-4cb8-a515-e90b46a95e32",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "OMG",
+        "id": "f43086d2-50fa-4d47-9daa-05b0945d6a0c",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ORN",
+        "id": "ed199181-673e-4f77-96c6-2518697781bc",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "OXT",
+        "id": "85b806db-589f-42d8-8a0e-f9216cf6e6be",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "PAX",
+        "id": "d88a8fd3-b2da-4fcd-9f29-2fa3cea5fcc8",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "PERP",
+        "id": "2eeacb3d-0ad0-469f-8e3b-6cdd8f3ed1f5",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "PLA",
+        "id": "1ee2b8c0-631e-414a-ab6d-7986d8bdd12f",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "POLY",
+        "id": "2fc4edca-a611-46e9-82f2-3a2f60ccdb6a",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "QNT",
+        "id": "e9adcfa0-0195-467b-bb0e-5d67417f59ae",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "QUICK",
+        "id": "2158300c-2a00-4db1-9574-28e82fe4bab2",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "RAD",
+        "id": "41d55bc4-f747-41bc-852e-24d208b28ebd",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "RAI",
+        "id": "dd699e24-4f52-4b7d-b683-9980ff323533",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "RARI",
+        "id": "3a264d00-ba5a-42d6-9677-b6726860e053",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "REN",
+        "id": "2a9e4127-56da-4824-a3d0-52065b515805",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "REP",
+        "id": "ccda0ed1-cd56-4b45-bb28-18c94e60aada",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "REQ",
+        "id": "6ee58ee5-b536-494f-bb64-6a1c1766ccf9",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "RGT",
+        "id": "f6506a48-548b-449d-aeaa-d3e121df3a45",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "RLC",
+        "id": "34fb0a66-a18b-4075-b87a-5c82aadcee79",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "RLY",
+        "id": "0c6f1224-fdeb-4faf-923b-2fa27330129f",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "SHIB",
+        "id": "4c13b5b2-fa58-4017-b70f-b8b2bfce8544",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "SKL",
+        "id": "daed9024-6151-4b0d-9f2c-8412f208d6d9",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "SNX",
+        "id": "02468896-a1a9-4190-9e62-46bb5dc3a714",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "SOL",
+        "id": "24ecad9b-5536-48a4-a63a-950367b3c6eb",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "STORJ",
+        "id": "233d1e5d-099d-46ad-b534-e0deb9393203",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "SUKU",
+        "id": "2a9533a7-d105-4bba-b25d-1ca0411de6a7",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "SUSHI",
+        "id": "6c82b824-cdc5-484b-adab-a79e80c32904",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "TBTC",
+        "id": "a800c50d-64c4-4c83-9ca6-a4d9de147ce9",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "TRAC",
+        "id": "e4f17361-066b-4026-a583-799a39d86172",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "TRB",
+        "id": "377270f3-0bc9-48e0-8559-c58dfd820354",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "TRIBE",
+        "id": "04e0fbf9-166e-4231-9a91-01e386f65991",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "TRU",
+        "id": "489db9a7-1004-4145-ac4f-778b48a6b909",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "UMA",
+        "id": "9ec9ea70-fbbc-4df8-b841-44cc4491f6e5",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "UNI",
+        "id": "89759b9e-7a76-4f26-8f44-fd11935600d8",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "available": "177.35",
+        "balance": "177.3500000000000000",
+        "currency": "USD",
+        "id": "b8acdb79-d6cd-404f-bffc-83202b0278ea",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "USDC",
+        "id": "0505363e-7de6-4dd5-a687-b0fb0555333f",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "USDT",
+        "id": "4fb24418-8458-4634-942e-5d53b77b73a6",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "UST",
+        "id": "691651c7-6db8-4aae-85ce-376284f03ce5",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "WBTC",
+        "id": "792d8fed-3081-437e-bde5-4c9491d9304c",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "WCFG",
+        "id": "9a4f4a0e-625d-48cc-9156-4ccb23a222d0",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "WLUNA",
+        "id": "6ceb0075-a68b-426c-8f5f-7e70130693e5",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "XLM",
+        "id": "9636468a-d4f0-4a75-ab1c-6d447777ab56",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "XRP",
+        "id": "7d95bfd6-2840-4f47-ac63-080c109710b7",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "XTZ",
+        "id": "38517124-4e1b-4824-b1c8-7222c76b4c99",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "XYO",
+        "id": "f82d5810-1434-4f0a-8e5c-ccee1237a6e7",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "YFI",
+        "id": "7b9069bd-508f-47a6-8cf7-f548942fdf63",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "YFII",
+        "id": "0c0c988f-9286-4eae-8a54-bf76c2937e4e",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ZEC",
+        "id": "ab60a52f-1cb4-49e5-9804-066b076b674f",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ZEN",
+        "id": "f790b43c-264c-4158-adb6-2604f0a08d95",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    },
+    {
+        "currency": "ZRX",
+        "id": "e6a5ec3a-0d5b-403c-91a7-cb7557909066",
+        "profile_id": "a4a72ec0-4a9f-4475-8169-69b85befdeed",
+    }
+]
