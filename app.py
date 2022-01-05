@@ -51,7 +51,7 @@ def main():
     max_buy_price = 0.01 #UNUSED, TBD based on pivots
     
     while True:
-        current_price = product.ticker(product_id)
+        #UNUSED, current_price = product.ticker(product_id)
         data = product.candles(product_id, seconds)
         df = pd.read_json(data)
 
