@@ -53,6 +53,23 @@ def get_single_order(order_id):
     # response = json.dumps(response)
     return(response)
 
+def submit_order(side, product_id, recent_close, num_shares):
+    api_url = "https://api.exchange.coinbase.com/orders"
+
+    payload = {
+        "type": "limit",
+        "side": side,
+        "product_id": product_id,
+        "price": recent_close,
+        "size": num_shares
+    }
+
+    auth = CoinbaseAuth(API_KEY, API_SECRET, API_PHRASE)
+    response = requests.post(api_url, json=payload, auth=auth)
+    response = json.loads(response.text)
+    return(response)
+
+    
 
 
 # # type str
