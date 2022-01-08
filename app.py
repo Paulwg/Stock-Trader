@@ -1,4 +1,5 @@
 import time
+import datetime
 import pandas as pd
 import numpy as np
 import talib as ta
@@ -9,12 +10,15 @@ from scipy import interpolate, ndimage, signal
 import CoinbaseAuth as CA
 import product
 
+#TODO:
+#   most recent candle will never have a sell or buy signal because of the time delay, unless I am mistaken
+
 def main():
 
     pd.set_option('display.max_rows', 301)
 
     ready_sell = False
-    ready_buy = False
+    ready_buy = True
     holding = False #placeholder, need to add ability to check 
     order_id = "" #placeholder
 
@@ -22,14 +26,14 @@ def main():
     # 300sec seems to be the most reliable while also being smaller timeframe
     seconds = '300'
 
-    portfolio = 10000.00
+    portfolio = 100.00
 
-    purchase_price = 30
-    num_shares = 100 # tbd if bought or sold
+    purchase_price = 24
+    num_shares = 50 # tbd if bought or sold
     capital_gains_tax = 0.27
 
-    entrance_fee = 30
-    exit_fee = 30
+    entrance_fee = 0.2
+    exit_fee = 0.2
 
     desired_gain = purchase_price * 0.02 # 2% gain expected each trade? we'll see
     # based on desired_gain and accounting for taxes
@@ -41,7 +45,7 @@ def main():
 
     buy_cost = purchase_price * num_shares + entrance_fee
     
-    sold_price = 31
+    sold_price = 27
     pre_tax_gain = sold_price * num_shares - exit_fee
     actual_gain = (pre_tax_gain) - (pre_tax_gain * capital_gains_tax)
 
@@ -61,14 +65,66 @@ def main():
         df['Timestamp'] = mdate.epoch2num(df['Timestamp'])
 
         df["SMA_20"] = ta.SMA(df["close"],timeperiod=20)
+        # estimate SMA of now
+        df.loc[0, "SMA_20"] = df.loc[:19,"close"].astype(float).sum(axis=0) / 20
         df["SMA_50"] = ta.SMA(df["close"],timeperiod=50)
+        df.loc[0, "SMA_50"] = df.loc[:49,"close"].astype(float).sum(axis=0) / 50
+
         df["SAR"] = ta.SAR(df["high"],df["low"])
+        # use sar[1] as most recent, save time and effort
+
         df["RSI"] = ta.RSI(df["close"])
+        # estimate rsi of now
+        _ = df["close"].copy()
+        df["_dif"] = _.diff(1)
+        df['_gn'] = df['_dif'].clip(lower=0).round(2)
+        df['_ls'] = df['_dif'].clip(upper=0).abs().round(2)
+        avg_gain = df.loc[:13,'_gn'].astype(float).sum(axis=0) /14
+        avg_loss = df.loc[:13,'_ls'].astype(float).sum(axis=0) / 14
+        rs = round(avg_gain / avg_loss, 2)
+        rsi = round(100 - (100 / (1 + rs)), 2)
+        df.loc[0, "RSI"] = rsi
+
         df["AROON_DOWN"],df["AROON_UP"] = ta.AROON(df["high"],df["low"])
+        _max = df.loc[:13,'close'].max()
+        _max = df.loc[:13,'close'].index[df.loc[:13,'close']==_max].tolist()
+        aroon_up = ( 14 - _max[0] ) / 14 * 100
+        _min = df.loc[:13,'close'].min()
+        _min = df.loc[:13,'close'].index[df.loc[:13,'close']==_min].tolist()
+        aroon_down = ( 14 - _min[0] ) / 14 * 100
+        df.loc[0,"AROON_UP"] = aroon_up
+        df.loc[0,"AROON_DOWN"] = aroon_down
+
         df["BOP"] = ta.BOP(df["open"], df["high"], df["low"], df["close"])
-        df["ADX"] = ta.ADX(df["high"], df["low"], df["close"])
+
+        df["ADX"] = ta.ADX(df["high"], df["low"], df["close"],timeperiod=14)
         df["MINUS_DI"] = ta.MINUS_DI(df["high"], df["low"], df["close"])
         df["PLUS_DI"] = ta.PLUS_DI(df["high"], df["low"], df["close"])
+
+        high_low = df.loc[:13,'high'] - df.loc[:13,'low']
+        high_close = np.abs(df.loc[:13,'high'] - df.loc[:13,'close'].shift())
+        low_close = np.abs(df.loc[:13,'low'] - df.loc[:13,'close'].shift())
+
+
+        ranges = pd.concat([high_low, high_close, low_close], axis=1)
+        true_range = ranges.max(axis=1)
+        atr = true_range.rolling(14).mean()
+
+        plus_dm = df['high'].diff() 
+        plus_dm[plus_dm < 0 ] = 0
+
+        minus_dm = df['low'].diff() 
+        minus_dm[minus_dm > 0 ] = 0
+
+        plus_di = 100 * (plus_dm.ewm(alpha = 1/14).mean() / atr) 
+        df.loc[0,'PLUS_DI'] = plus_di[13]
+
+        minus_di = abs(100 * (minus_dm.ewm(alpha = 1/14).mean() / atr)) 
+        df.loc[0,'MINUS_DI'] = minus_di[13]
+
+        dx = (abs(plus_di - minus_di) / abs(plus_di + minus_di)) * 100
+        #arbitrary avg??
+        df.loc[0,'ADX'] = (df.loc[27,'ADX'] + dx[13]) / 2
 
         # instantiate for plotting purposes on first run
         df["buy_signal"] = False
@@ -89,6 +145,8 @@ def main():
         minus_di = df["MINUS_DI"]
         adx = df["ADX"]
         bop = df["BOP"]
+
+
 
         #================#
         # Volume Checker #
@@ -155,6 +213,7 @@ def main():
             df["rsi_check"] = rsi.lt(40)
             df["bop_check"] = bop.lt(-0.4)
             df["sar_check"] = sar.gt(close) & SMA_50.gt(close)
+            df.loc[0,"sar_check"] = df.loc[1,"sar_check"]
             df["buyflag"] = df.apply(lambda x : True if sum(
                 [x['sma_check'],
                 x['ar_check'],
@@ -169,20 +228,24 @@ def main():
             df['buy_signal'] = df.apply(lambda x : True if x['buyflag'] & x['vol_valid'] 
                                                         else False, axis=1)
 
+            # print("Buy loop:")
+            # print(df)
+
             if df['buy_signal'][0] == True:
                 if recent_close < repurchase_price:
-                    print("BUY")
-                    ## need to submit buy order now
-                    num_shares = portfolio / recent_close
-                    side = "buy"
-                    response = CA.submit_order(side, 
-                                               product_id, 
-                                               str(recent_close), 
-                                               str(num_shares)
-                                               )
+                    print(f'{datetime.datetime.now()} : BUY')
+                    print(recent_close,"\n")
+            #         ## need to submit buy order now
+            #         num_shares = portfolio / recent_close
+            #         side = "buy"
+            #         response = CA.submit_order(side, 
+            #                                    product_id, 
+            #                                    str(recent_close), 
+            #                                    str(num_shares)
+            #                                    )
 
-                    ## save order_id and any subsequent vars
-                    order_id = response["id"]
+            #         ## save order_id and any subsequent vars
+            #         order_id = response["id"]
 
                     # flip flag
                     holding = True
@@ -207,6 +270,7 @@ def main():
             df["rsi_check"] = rsi.gt(60)
             df["bop_check"] = bop.gt(0.4)
             df["sar_check"] = sar.lt(close) & SMA_50.lt(close)
+            df.loc[0,"sar_check"] = df.loc[1,"sar_check"]
             df["sellflag"] = df.apply(lambda x : True if sum(
                 [x['sma_check'],
                 x['ar_check'],
@@ -222,20 +286,25 @@ def main():
                                                     x['sellflag'] #& x['vol_valid'] 
                                                     else False, axis=1)
             
+            # print("Sell loop:")
+            # print(df)
+
             if df['sell_signal'][0] == True:
                 if recent_close > min_sell_price:
-                    print("SELL")
-                    # need to submit order now
-                    side = "sell"
-                    response = CA.submit_order(side, 
-                                               product_id,
-                                               str(recent_close),
-                                               str(num_shares)
-                                               )
-                    # save order_id and any subsequent vars
-                    order_id = response["id"]
+                    print(f'{datetime.datetime.now()} : SELL')
+                    print(recent_close, "\n")
+            #         # need to submit order now
+            #         side = "sell"
+            #         response = CA.submit_order(side, 
+            #                                    product_id,
+            #                                    str(recent_close),
+            #                                    str(num_shares)
+            #                                    )
+            #         # save order_id and any subsequent vars
+            #         order_id = response["id"]
 
                     # flip flag
+                    #was indented to here
                     holding = False
                     ready_sell = False
 
@@ -243,28 +312,29 @@ def main():
         # end sell logic #
         #================#
 
-        else: # checking submitted order
-            pass
-            #order_id = 'b55c7be8-211e-4419-abbc-c606be36fef4' # test order_id
+        # else: # checking submitted order
+        #     #order_id = 'b55c7be8-211e-4419-abbc-c606be36fef4' # test order_id
+        #     if order_id:
+        #         submitted_order = CA.get_single_order(order_id)
+        #         if submitted_order["status"] == "done" and submitted_order["settled"] == True:
+        #             print("order is complete")
 
-            submitted_order = CA.get_single_order(order_id)
-            if submitted_order["status"] == "done" and submitted_order["settled"] == True:
-                print("order is complete")
+        #             if submitted_order["side"] == "buy":
+        #                 print("Buy order Finished")
+        #                 ready_sell = True
+        #                 order_id = response["id"]
+        #                 purchase_price = response["price"]
+        #                 num_shares = response["filled_size"]
+        #                 entrance_fee = response["fill_fees"]
+        #                 executed_value = response["executed_value"]
 
-                if submitted_order["side"] == "buy":
-                    ready_sell = True
-                    order_id = response["id"]
-                    purchase_price = response["price"]
-                    num_shares = response["filled_size"]
-                    entrance_fee = response["fill_fees"]
-                    executed_value = response["executed_value"]
-
-                if submitted_order["side"] == "sell":
-                    ready_buy = True
-                    sold_price = response["price"]
-                    num_shares = response["filled_size"]
-                    exit_fee = response["fill_fees"]
-                    portfolio = response["executed_value"]
+        #             if submitted_order["side"] == "sell":
+        #                 print("Sell order Finished")
+        #                 ready_buy = True
+        #                 sold_price = response["price"]
+        #                 num_shares = response["filled_size"]
+        #                 exit_fee = response["fill_fees"]
+        #                 portfolio = response["executed_value"]
 
 
         #================#

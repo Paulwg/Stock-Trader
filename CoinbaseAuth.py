@@ -30,8 +30,9 @@ class CoinbaseAuth(AuthBase):
 
 def pp_json(args):
     response = json.loads(args.text)
-    pp = json.dumps(response, indent=4, sort_keys=True)
+    pp = json.dumps(response, indent=4)
     print(pp)
+    return(pp)
 
 def get_acct():
     api_url = "https://api.exchange.coinbase.com/accounts"
@@ -49,8 +50,7 @@ def get_single_order(order_id):
     api_url = f"https://api.exchange.coinbase.com/orders/{order_id}"
     auth = CoinbaseAuth(API_KEY, API_SECRET, API_PHRASE)
     response = requests.get(api_url, auth=auth)
-    response = json.loads(response.text)
-    # response = json.dumps(response)
+    response = response.json()
     return(response)
 
 def submit_order(side, product_id, recent_close, num_shares):
@@ -66,7 +66,7 @@ def submit_order(side, product_id, recent_close, num_shares):
 
     auth = CoinbaseAuth(API_KEY, API_SECRET, API_PHRASE)
     response = requests.post(api_url, json=payload, auth=auth)
-    response = json.loads(response.text)
+    response = response.json()
     return(response)
 
     
