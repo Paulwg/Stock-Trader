@@ -39,7 +39,7 @@ def main():
             dataf['slope'] = dataf['kama'].rolling(window=20,min_periods=20).apply(get_sloppy, raw=True)
             dataf['diff'] = dataf.apply(lambda x : x[2] - x[1], axis=1)
             dataf['HL2'] = dataf.apply(lambda x : (x[2]+x[1])/2, axis=1)
-            dataf['fib-0.5'] = dataf.apply(lambda x : x['HL2'] + (-0.5 * x['diff']), axis=1)
+            dataf['fib-1.0'] = dataf.apply(lambda x : x['HL2'] + (-1 * x['diff']), axis=1) #was -0.5
             dataf = dataf.dropna()
 
             S3 = ((dataf['slope'][0] + dataf['slope'][1] + dataf['slope'][2]) / 3) * 10000
@@ -54,6 +54,7 @@ def main():
                 purchase_power = portfolio * bet_sz
                 buy_shares = round(purchase_power / last_close,0)
                 response = CA.submit_order('buy',prod_id,last_close,buy_shares)
+                time.sleep(3)
                 order = response["id"]
 
                 while True:
@@ -68,11 +69,11 @@ def main():
                             portfolio -= exec_val
                             portfolio -= fill_fees
                             buying = False
-                            stop_loss = exec_val - (exec_val * -0.02) # dataf['fib-0.5'][1] #temp trying 2% SL until volatility checker implemented
+                            stop_loss = dataf['fib-1.0'][1]
                             break
                         time.sleep(30)
             else:
-                print(f'{datetime.now()}  Slope: {S3} ...waiting')
+                print(f'{datetime.now()}  Slope: {round(S3,4)}  Portfolio: {round(portfolio,4)} ')
                 print(f'Trades: {wins+losses}  Wins: {wins}  Losses: {losses}')
                 time.sleep(int(secs)+1)
 
@@ -91,6 +92,7 @@ def main():
             if last_close > min_sell_price:
                 print(f'Target price triggered: {last_close}')
                 response = CA.submit_order('sell',prod_id,last_close,fill_sz)
+                time.sleep(3)
                 order = response["id"]
             
                 while True:
@@ -111,6 +113,7 @@ def main():
             elif last_close < stop_loss:
                 print(f'Stop loss triggered: {last_close}')
                 response = CA.submit_order('sell',prod_id,last_close,fill_sz)
+                time.sleep(3)
                 order = response["id"]
             
                 while True:
@@ -128,7 +131,8 @@ def main():
                             break
                         time.sleep(30)
             else:
-                print(f'{datetime.now()}  Last: {last_close}  <  Min Sell Price: {min_sell_price}')
+                print(f'{datetime.now()}  Last: {last_close} < Min Sell: {min_sell_price}')
+                print(f'Portfolio: {round(portfolio,4)}')
                 print(f'Trades: {wins+losses}  Wins: {wins}  Losses: {losses}')
                 time.sleep(int(secs)+1)
 
