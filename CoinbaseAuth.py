@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-
-import os, json, hmac, base64, hashlib, time, requests
+import os, json, hmac, base64, time, hashlib, requests
 from requests.auth import AuthBase
 
 API_KEY = os.environ.get("API_KEY")
@@ -8,19 +7,23 @@ API_SECRET = os.environ.get("API_SECRET")
 API_PHRASE = os.environ.get("API_PHRASE")
 
 class CoinbaseAuth(AuthBase):
-    def __init__(self, api_key, secret_key, api_phrase):
-        self.api_key = api_key
-        self.secret_key = secret_key
-        self.api_phrase = api_phrase
+    def __init__(self, api_key, api_secret, api_phrase):
+        self.api_key = str(api_key)
+        self.api_secret = api_secret
+        self.api_phrase = str(api_phrase)
 
     def __call__(self, request):
-        timestamp = int(time.time())
-        message = str(timestamp) + request.method + request.path_url
-        signature = hmac.new(base64.b64decode(self.secret_key), message.encode(), hashlib.sha256).digest()
-        signature = base64.b64encode(signature)
+        timestamp = str(time.time())
+        message = f"{timestamp}{request.method}{request.path_url}{request.body.decode('UTF-8') if request.body else ''}"
+
+        key = base64.b64decode(self.api_secret)
+        signature = hmac.new(key,bytes(message, encoding="utf-8"),hashlib.sha256)
+        cb_access_sign = base64.b64encode(signature.digest())
+
         request.headers.update({
             "Accept": "application/json",
-            "CB-ACCESS-SIGN": signature,
+            "Content-Type": "application/json",
+            "CB-ACCESS-SIGN": cb_access_sign,
             "CB-ACCESS-TIMESTAMP": timestamp,
             "CB-ACCESS-KEY": self.api_key,
             "CB-ACCESS-PASSPHRASE": self.api_phrase,
@@ -54,8 +57,9 @@ def get_single_order(order_id):
     return(response)
 
 def submit_order(side, product_id, recent_close, num_shares):
+    print(f'Submitting {side} order: {num_shares} X {product_id} at {recent_close}')
     api_url = "https://api.exchange.coinbase.com/orders"
-
+    
     payload = {
         "type": "limit",
         "side": side,
@@ -68,17 +72,3 @@ def submit_order(side, product_id, recent_close, num_shares):
     response = requests.post(api_url, json=payload, auth=auth)
     response = response.json()
     return(response)
-
-    
-
-
-# # type str
-# resp_txt = json.loads(r.text)
-# pp_json = json.dumps(resp_txt, indent=4, sort_keys=True)
-# print(pp_json)
-# # with open('all_accounts', 'w') as fd:
-#     # fd.write(pp_json)
-
-# # type list of json?
-# # resp_json = r.json()
-# # print(resp_json)

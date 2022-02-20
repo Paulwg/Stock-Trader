@@ -1,5 +1,5 @@
 import time
-import datetime
+from datetime import datetime
 import pandas as pd
 import numpy as np
 import talib as ta
@@ -10,12 +10,10 @@ from scipy import interpolate, ndimage, signal
 import CoinbaseAuth as CA
 import product
 
-#TODO:
-#   most recent candle will never have a sell or buy signal because of the time delay, unless I am mistaken
 
 def main():
 
-    pd.set_option('display.max_rows', 301)
+    # pd.set_option('display.max_rows', 301)
 
     ready_sell = False
     ready_buy = True
@@ -42,7 +40,6 @@ def main():
                         - (exit_fee * capital_gains_tax)) 
                         / (num_shares * (1 - capital_gains_tax))))
 
-
     buy_cost = purchase_price * num_shares + entrance_fee
     
     sold_price = 27
@@ -55,7 +52,6 @@ def main():
     max_buy_price = 0.01 #UNUSED, TBD based on pivots
     
     while True:
-        #UNUSED, current_price = product.ticker(product_id)
         data = product.candles(product_id, seconds)
         df = pd.read_json(data)
 
@@ -64,36 +60,16 @@ def main():
         # convert epoch to matplotlib readable
         df['Timestamp'] = mdate.epoch2num(df['Timestamp'])
 
+        df = df.iloc[::-1]
+
         df["SMA_20"] = ta.SMA(df["close"],timeperiod=20)
-        # estimate SMA of now
-        df.loc[0, "SMA_20"] = df.loc[:19,"close"].astype(float).sum(axis=0) / 20
-        df["SMA_50"] = ta.SMA(df["close"],timeperiod=50)
-        df.loc[0, "SMA_50"] = df.loc[:49,"close"].astype(float).sum(axis=0) / 50
+        df['SMA_50'] = ta.SMA(df["close"],timeperiod=20)
 
         df["SAR"] = ta.SAR(df["high"],df["low"])
-        # use sar[1] as most recent, save time and effort
 
         df["RSI"] = ta.RSI(df["close"])
-        # estimate rsi of now
-        _ = df["close"].copy()
-        df["_dif"] = _.diff(1)
-        df['_gn'] = df['_dif'].clip(lower=0).round(2)
-        df['_ls'] = df['_dif'].clip(upper=0).abs().round(2)
-        avg_gain = df.loc[:13,'_gn'].astype(float).sum(axis=0) /14
-        avg_loss = df.loc[:13,'_ls'].astype(float).sum(axis=0) / 14
-        rs = round(avg_gain / avg_loss, 2)
-        rsi = round(100 - (100 / (1 + rs)), 2)
-        df.loc[0, "RSI"] = rsi
 
         df["AROON_DOWN"],df["AROON_UP"] = ta.AROON(df["high"],df["low"])
-        _max = df.loc[:13,'close'].max()
-        _max = df.loc[:13,'close'].index[df.loc[:13,'close']==_max].tolist()
-        aroon_up = ( 14 - _max[0] ) / 14 * 100
-        _min = df.loc[:13,'close'].min()
-        _min = df.loc[:13,'close'].index[df.loc[:13,'close']==_min].tolist()
-        aroon_down = ( 14 - _min[0] ) / 14 * 100
-        df.loc[0,"AROON_UP"] = aroon_up
-        df.loc[0,"AROON_DOWN"] = aroon_down
 
         df["BOP"] = ta.BOP(df["open"], df["high"], df["low"], df["close"])
 
@@ -101,35 +77,22 @@ def main():
         df["MINUS_DI"] = ta.MINUS_DI(df["high"], df["low"], df["close"])
         df["PLUS_DI"] = ta.PLUS_DI(df["high"], df["low"], df["close"])
 
-        high_low = df.loc[:13,'high'] - df.loc[:13,'low']
-        high_close = np.abs(df.loc[:13,'high'] - df.loc[:13,'close'].shift())
-        low_close = np.abs(df.loc[:13,'low'] - df.loc[:13,'close'].shift())
+        df = df.dropna()
+        df = df.iloc[::-1]
 
+        # high_low = df.loc[:13,'high'] - df.loc[:13,'low']
+        # high_close = np.abs(df.loc[:13,'high'] - df.loc[:13,'close'].shift())
+        # low_close = np.abs(df.loc[:13,'low'] - df.loc[:13,'close'].shift())
 
-        ranges = pd.concat([high_low, high_close, low_close], axis=1)
-        true_range = ranges.max(axis=1)
-        atr = true_range.rolling(14).mean()
-
-        plus_dm = df['high'].diff() 
-        plus_dm[plus_dm < 0 ] = 0
-
-        minus_dm = df['low'].diff() 
-        minus_dm[minus_dm > 0 ] = 0
-
-        plus_di = 100 * (plus_dm.ewm(alpha = 1/14).mean() / atr) 
-        df.loc[0,'PLUS_DI'] = plus_di[13]
-
-        minus_di = abs(100 * (minus_dm.ewm(alpha = 1/14).mean() / atr)) 
-        df.loc[0,'MINUS_DI'] = minus_di[13]
-
-        dx = (abs(plus_di - minus_di) / abs(plus_di + minus_di)) * 100
-        #arbitrary avg??
-        df.loc[0,'ADX'] = (df.loc[27,'ADX'] + dx[13]) / 2
+        # ranges = pd.concat([high_low, high_close, low_close], axis=1)
+        # true_range = ranges.max(axis=1)
+        # atr = true_range.rolling(14).mean()
 
         # instantiate for plotting purposes on first run
         df["buy_signal"] = False
         df["sell_signal"] = False
         
+
         date = df["Timestamp"]
         cdate = df["Timestamp"]
         close = df["close"]
@@ -145,8 +108,6 @@ def main():
         minus_di = df["MINUS_DI"]
         adx = df["ADX"]
         bop = df["BOP"]
-
-
 
         #================#
         # Volume Checker #
@@ -340,62 +301,62 @@ def main():
         #================#
         # BEGIN PLOTTING #
         #================#
-        # colors = {'red': '#ff207c', 'grey': '#42535b', 'blue': '#207cff', 'orange': '#ffa320', 'green': '#00ec8b'}
-        # config_ticks = {'size': 14, 'color': colors['grey'], 'labelcolor': colors['grey']}
-        # config_title = {'size': 18, 'color': colors['grey'], 'ha': 'left', 'va': 'baseline'}
+        colors = {'red': '#ff207c', 'grey': '#42535b', 'blue': '#207cff', 'orange': '#ffa320', 'green': '#00ec8b'}
+        config_ticks = {'size': 14, 'color': colors['grey'], 'labelcolor': colors['grey']}
+        config_title = {'size': 18, 'color': colors['grey'], 'ha': 'left', 'va': 'baseline'}
 
-        # plt.rc('figure', figsize=(15,10))
-        # fig, axes = plt.subplots(3, 1, sharex=True, gridspec_kw={'height_ratios': [3,1,1]})
-        # fig.tight_layout(pad=3)
+        plt.rc('figure', figsize=(15,10))
+        fig, axes = plt.subplots(3, 1, sharex=True, gridspec_kw={'height_ratios': [3,1,1]})
+        fig.tight_layout(pad=3)
             
-        # plot_price = axes[0]
-        # plot_price.plot(date, close, color='darkgrey', label='Price', marker='$B$', ms=25, markevery=df.index[df['buy_signal']].tolist())
-        # plot_price.plot(date, close, color='darkgrey', label='Price', marker='$S$', ms=25, markevery=df.index[df['sell_signal']].tolist())
+        plot_price = axes[0]
+        plot_price.plot(date, close, color='darkgrey', label='Price', marker='$B$', ms=25, markevery=df.index[df['buy_signal']].tolist())
+        plot_price.plot(date, close, color='darkgrey', label='Price', marker='$S$', ms=25, markevery=df.index[df['sell_signal']].tolist())
 
-        # plot_price.plot(cdate, SMA_20, '--', color=colors['orange'], label='SMA20')
-        # plot_price.plot(cdate, SMA_50, '--', color=colors['red'], label='SMA50')
+        plot_price.plot(cdate, SMA_20, '--', color=colors['orange'], label='SMA20')
+        plot_price.plot(cdate, SMA_50, '--', color=colors['red'], label='SMA50')
 
-        # # Spline
-        # x_smooth = np.linspace(date.min(), date.max(), 600)
-        # spl = interpolate.UnivariateSpline(date.iloc[::-1], close)
-        # plot_price.plot(date, spl(date.iloc[::-1]), color='yellow', ls=':')
+        # Spline
+        x_smooth = np.linspace(date.min(), date.max(), 600)
+        spl = interpolate.UnivariateSpline(date.iloc[::-1], close)
+        plot_price.plot(date, spl(date.iloc[::-1]), color='yellow', ls=':')
         
-        # #gaussian filter
-        # sigma = 4
-        # x_g1d = ndimage.gaussian_filter1d(date, sigma)
-        # y_g1d = ndimage.gaussian_filter1d(close, sigma)
-        # #rel min, max . Returned as array of index of dataset
-        # mins = signal.argrelextrema(y_g1d, np.less)[0]
-        # maxes = signal.argrelextrema(y_g1d, np.greater)[0]
+        #gaussian filter
+        sigma = 4
+        x_g1d = ndimage.gaussian_filter1d(date, sigma)
+        y_g1d = ndimage.gaussian_filter1d(close, sigma)
+        #rel min, max . Returned as array of index of dataset
+        mins = signal.argrelextrema(y_g1d, np.less)[0]
+        maxes = signal.argrelextrema(y_g1d, np.greater)[0]
 
-        # plot_price.plot(x_g1d[mins], y_g1d[mins], 'r^')
-        # plot_price.plot(x_g1d[maxes], y_g1d[maxes], 'gv')
-        # plot_price.plot(x_g1d, y_g1d, color='black', label='g1d')
+        plot_price.plot(x_g1d[mins], y_g1d[mins], 'r^')
+        plot_price.plot(x_g1d[maxes], y_g1d[maxes], 'gv')
+        plot_price.plot(x_g1d, y_g1d, color='black', label='g1d')
 
-        # plot_price.yaxis.tick_right()
-        # plot_price.tick_params(axis='both', **config_ticks)
-        # plot_price.yaxis.set_label_position("right")
-        # plot_price.yaxis.label.set_color(colors['grey'])
-        # plot_price.grid(axis='y', color='gainsboro', linestyle='-', linewidth=0.5)
-        # plot_price.set_axisbelow(True)
+        plot_price.yaxis.tick_right()
+        plot_price.tick_params(axis='both', **config_ticks)
+        plot_price.yaxis.set_label_position("right")
+        plot_price.yaxis.label.set_color(colors['grey'])
+        plot_price.grid(axis='y', color='gainsboro', linestyle='-', linewidth=0.5)
+        plot_price.set_axisbelow(True)
 
-        # plot_vol = axes[1]
-        # plot_vol.plot(date, vol, color='grey', label='Vol')
+        plot_vol = axes[1]
+        plot_vol.plot(date, vol, color='grey', label='Vol')
 
-        # plot_rsi = axes[2]
-        # plot_rsi.plot(cdate, rsi, color='purple', label='RSI')
+        plot_rsi = axes[2]
+        plot_rsi.plot(cdate, rsi, color='purple', label='RSI')
 
-        # date_form = mdate.DateFormatter("%D-%H:%M:%S")
+        date_form = mdate.DateFormatter("%D-%H:%M:%S")
 
-        # for ax in axes:
-        #     ax.xaxis.set_major_formatter(date_form)
+        for ax in axes:
+            ax.xaxis.set_major_formatter(date_form)
 
-        # plt.setp(plot_vol.get_xticklabels(), rotation=15)
-        # plot_legend = fig.legend(loc='upper left', bbox_to_anchor= (-0.005, 0.95), fontsize=16)
-        # for text in plot_legend.get_texts():
-        #     text.set_color(colors['grey'])
+        plt.setp(plot_vol.get_xticklabels(), rotation=15)
+        plot_legend = fig.legend(loc='upper left', bbox_to_anchor= (-0.005, 0.95), fontsize=16)
+        for text in plot_legend.get_texts():
+            text.set_color(colors['grey'])
 
-        # plt.show()
+        plt.show()
 
         #==============#
         # End Plotting #
