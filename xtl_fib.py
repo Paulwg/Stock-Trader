@@ -2,11 +2,20 @@ import time
 from datetime import datetime
 import pandas as pd
 import talib as ta
+import gspread
+from google.oauth2.service_account import Credentials
 
 import CoinbaseAuth as CA
 import product
 
 #note: may need to begin execution closer to close of the most recent candle
+
+scope = ['https://www.googleapis.com/auth/spreadsheets',
+        'https://www.googleapis.com/auth/drive']
+creds = Credentials.from_service_account_file("fintechpass.json", scopes=scope)
+client = gspread.authorize(creds)
+google_sh = client.open("Trade Indicators")
+sheet1 = google_sh.get_worksheet(11)
 
 def main():
 
@@ -113,6 +122,8 @@ def main():
                     fill_fees = submitted_order['fill_fees']
                     fill_sz = submitted_order['filled_size']
                     print(f'Executed Value: {exe_val}\nFill size: {fill_sz}\nFees: {fill_fees}')
+                    sheet1.append_rows(values=[[submitted_order["side"],fill_sz,exe_val,fill_fees,initial_stop,trailing_stop]])
+
 
                     if submitted_order["side"] == "buy":
                         print("Buy order Finished")

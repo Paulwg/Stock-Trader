@@ -6,9 +6,18 @@ import pandas as pd
 import talib as ta
 import numpy as np
 from scipy.stats import linregress
+import gspread
+from google.oauth2.service_account import Credentials
 
 import CoinbaseAuth as CA
 import product
+
+scope = ['https://www.googleapis.com/auth/spreadsheets',
+        'https://www.googleapis.com/auth/drive']
+creds = Credentials.from_service_account_file("fintechpass.json", scopes=scope)
+client = gspread.authorize(creds)
+google_sh = client.open("Trade Indicators")
+sheet1 = google_sh.get_worksheet(10)
 
 def get_prod(id,secs):
     rslt = product.candles(id,secs)
@@ -70,6 +79,7 @@ def main():
                             portfolio -= fill_fees
                             buying = False
                             stop_loss = dataf['fib-1.0'][1]
+                            sheet1.append_rows(values=[['Buy',fill_sz,exec_val,fill_fees,stop_loss]])
                             break
                         time.sleep(30)
             else:
@@ -107,6 +117,7 @@ def main():
                             portfolio += exec_val
                             portfolio -= fill_fees
                             wins +=1
+                            sheet1.append_rows(values=[['+Sell',fill_sz,exec_val,fill_fees,stop_loss,min_sell_price,wins]])
                             break
                         time.sleep(30)
 
@@ -128,6 +139,7 @@ def main():
                             portfolio += exec_val
                             portfolio -= fill_fees
                             losses += 1
+                            sheet1.append_rows(values=[['-Sell',fill_sz,exec_val,fill_fees,stop_loss,min_sell_price,losses]])
                             break
                         time.sleep(30)
             else:
