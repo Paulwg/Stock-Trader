@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os, json, hmac, base64, time, hashlib, requests
+from urllib import response
 from requests.auth import AuthBase
 
 API_KEY = os.environ.get("API_KEY")
@@ -55,6 +56,15 @@ def get_single_order(order_id):
     response = requests.get(api_url, auth=auth)
     response = response.json()
     return(response)
+
+def cancel_order(order_id):
+    api_url = f"https://api.exchange.coinbase.com/orders/{order_id}"
+    auth = CoinbaseAuth(API_KEY, API_SECRET, API_PHRASE)
+    response = requests.delete(api_url,auth=auth)
+    response = response.json()
+    print('Cancelling order.')
+    print(response)
+    return response
 
 def submit_order(side, product_id, recent_close, num_shares):
     print(f'Submitting {side} order: {num_shares} X {product_id} at {recent_close}')

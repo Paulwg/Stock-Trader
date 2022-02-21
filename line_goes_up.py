@@ -65,6 +65,7 @@ def main():
                 response = CA.submit_order('buy',prod_id,last_close,buy_shares)
                 time.sleep(3)
                 order = response["id"]
+                time_wait = 0
 
                 while True:
                     sumbitted_order = CA.get_single_order(order)
@@ -82,6 +83,11 @@ def main():
                             sheet1.append_rows(values=[['Buy',fill_sz,exec_val,fill_fees,stop_loss]])
                             break
                         time.sleep(30)
+                    time_wait += 1
+                    time.sleep(2)
+                    if time_wait > 45:
+                        CA.cancel_order(order)
+                        break
             else:
                 print(f'{datetime.now()}  Slope: {round(S3,4)}  Portfolio: {round(portfolio,4)} ')
                 print(f'Trades: {wins+losses}  Wins: {wins}  Losses: {losses}')
@@ -98,6 +104,8 @@ def main():
                                 - (exec_val * capital_gains_tax)
                                 - (fill_fees * capital_gains_tax)) 
                                 / (buy_shares * (1 - capital_gains_tax))))
+
+            time_wait = 0
 
             if last_close > min_sell_price:
                 print(f'Target price triggered: {last_close}')
@@ -120,6 +128,11 @@ def main():
                             sheet1.append_rows(values=[['+Sell',fill_sz,exec_val,fill_fees,stop_loss,min_sell_price,wins]])
                             break
                         time.sleep(30)
+                    time_wait += 1
+                    time.sleep(2)
+                    if time_wait > 45:
+                        CA.cancel_order(order)
+                        break
 
             elif last_close < stop_loss:
                 print(f'Stop loss triggered: {last_close}')
@@ -142,6 +155,11 @@ def main():
                             sheet1.append_rows(values=[['-Sell',fill_sz,exec_val,fill_fees,stop_loss,min_sell_price,losses]])
                             break
                         time.sleep(30)
+                    time_wait += 1
+                    time.sleep(2)
+                    if time_wait > 45:
+                        CA.cancel_order(order)
+                        break
             else:
                 print(f'{datetime.now()}  Last: {last_close} < Min Sell: {min_sell_price}')
                 print(f'Portfolio: {round(portfolio,4)}')
