@@ -67,22 +67,27 @@ def main():
         df['fib1.5'] = df.apply(lambda x : x['HL2'] + (1.5 * x['diff']), axis=1)
         df['fib-0.5'] = df.apply(lambda x : x['HL2'] + (-0.5 * x['diff']), axis=1)
         df['T3'] = ta.T3(df['close'],timeperiod=6,vfactor=0.7)
-        df = df.iloc[::-1]
+        # df = df.iloc[::-1]
         df = df.dropna()
 
-        df.loc[0, 'fib_buy'] = df.loc[0,'low']
-        for i in range (0,len(df)-1):
-            trgt = df.loc[i+1,'fib1.5']
-            rslt = df.loc[i,'high']
-            if rslt >= trgt:
-                df.loc[i, 'fib_buy'] = True
-            else:
-                df.loc[i, 'fib_buy'] = False
+        print(f'Fib 1.5 target: {df["fib1.5"][1]}')
+        print(f'Current price: {df["close"][0]}')
+
+        # df.loc[0, 'fib_buy'] = df.loc[0,'low']
+        # for i in range (0,len(df)-1):
+        #     trgt = df.loc[i+1,'fib1.5']
+        #     print(f'Fib 1.5 target: {trgt}')
+        #     rslt = df.loc[i,'high'] #don't like the way this is implemented
+        #     print(f'Current high: {rslt}') 
+        #     if rslt >= trgt:
+        #         df.loc[i, 'fib_buy'] = True
+        #     else:
+        #         df.loc[i, 'fib_buy'] = False
 
         #done this way for backtesting purposes
-        df['buy_signal'] = df.apply(lambda x : True if x['mark'] == 'bull'
-                                                    and x['fib_buy'] == True
-                                                    else False, axis=1)
+        # df['buy_signal'] = df.apply(lambda x : True if x['mark'] == 'bull'
+        #                                             and x['fib_buy'] == True
+        #                                             else False, axis=1)
 
         last_close = round(df['close'][0],6) # use most recent
         trailing_stop = df['T3'][0]
@@ -90,7 +95,8 @@ def main():
         buy_shares = round(purchase_power / last_close,0)
 
         if not holding and ready_buy:
-            if df['buy_signal'][0] == True:
+            #if df['buy_signal'][0] == True: OLD
+            if df['close'][0] >= df['fib1.5'][1] and df['mark'][0] == 'bull' :
                 print(f'{datetime.now()} : BUY')
                 side = 'buy'
                 response = CA.submit_order(side,product_id,last_close,buy_shares)
@@ -102,10 +108,10 @@ def main():
                 iterations = 0
 
         elif holding and ready_sell:
-            if last_close < initial_stop and iterations == 0 or last_close < trailing_stop:
+            if (last_close < initial_stop and iterations == 0) or (last_close < trailing_stop and iterations > 0):
                 print(f'{datetime.now()} : SELL')
                 print(f'Last Close: {last_close}')
-                print(f'Trailing Stop: {trailing_stop}')
+                print(f'Initial Stop: {initial_stop}  Trailing Stop: {trailing_stop}')
                 side = "sell"
                 response = CA.submit_order(side,product_id,last_close,sell_shares)
                 order_id = response['id']
