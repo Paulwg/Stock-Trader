@@ -73,11 +73,12 @@ def main():
         print(f'Fib 1.5 target: {df["fib1.5"][1]}')
         print(f'Current price: {df["close"][0]}')
 
+        #don't like the way this is implemented
         # df.loc[0, 'fib_buy'] = df.loc[0,'low']
         # for i in range (0,len(df)-1):
         #     trgt = df.loc[i+1,'fib1.5']
         #     print(f'Fib 1.5 target: {trgt}')
-        #     rslt = df.loc[i,'high'] #don't like the way this is implemented
+        #     rslt = df.loc[i,'high'] 
         #     print(f'Current high: {rslt}') 
         #     if rslt >= trgt:
         #         df.loc[i, 'fib_buy'] = True
