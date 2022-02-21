@@ -127,7 +127,16 @@ def main():
                     fill_fees = submitted_order['fill_fees']
                     fill_sz = submitted_order['filled_size']
                     print(f'\nExecuted Value: {exe_val}\nFill size: {fill_sz}\nFees: {fill_fees}\n')
-                    sheet1.append_rows(values=[[submitted_order["side"],fill_sz,exe_val,fill_fees,initial_stop,trailing_stop]])
+                    sheet1.append_rows(values=[[datetime.now(),
+                                                submitted_order["side"],
+                                                fill_sz,
+                                                last_close,
+                                                exe_val,
+                                                fill_fees,
+                                                initial_stop,
+                                                trailing_stop,
+                                                wins,
+                                                losses]])
 
 
                     if submitted_order["side"] == "buy":
@@ -161,8 +170,7 @@ def main():
                         elif ready_sell:
                             ready_buy = True
                             holding = False
-
-
+                        # sheet1.delete_rows(sheet1.row_count())
 
 
         print(f'Time: {datetime.now()}\tPortfolio: {portfolio}')

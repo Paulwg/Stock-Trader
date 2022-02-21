@@ -79,8 +79,14 @@ def main():
                             portfolio -= exec_val
                             portfolio -= fill_fees
                             buying = False
-                            stop_loss = dataf['fib-1.0'][1]
-                            sheet1.append_rows(values=[['Buy',fill_sz,exec_val,fill_fees,stop_loss]])
+                            stop_loss = dataf['fib-1.0'][1] 
+                            sheet1.append_rows(values=[[datetime.now(),
+                                                        'Buy',
+                                                        fill_sz,
+                                                        last_close,
+                                                        exec_val,
+                                                        fill_fees,
+                                                        stop_loss]])
                             break
                         time.sleep(30)
                     time_wait += 1
@@ -125,7 +131,15 @@ def main():
                             portfolio += exec_val
                             portfolio -= fill_fees
                             wins +=1
-                            sheet1.append_rows(values=[['+Sell',fill_sz,exec_val,fill_fees,stop_loss,min_sell_price,wins]])
+                            sheet1.append_rows(values=[[datetime.now(),
+                                                        '+Sell',
+                                                        fill_sz,
+                                                        last_close,
+                                                        exec_val,
+                                                        fill_fees,
+                                                        stop_loss,
+                                                        min_sell_price,
+                                                        wins]])
                             break
                         time.sleep(30)
                     time_wait += 1
@@ -152,7 +166,16 @@ def main():
                             portfolio += exec_val
                             portfolio -= fill_fees
                             losses += 1
-                            sheet1.append_rows(values=[['-Sell',fill_sz,exec_val,fill_fees,stop_loss,min_sell_price,losses]])
+                            sheet1.append_rows(values=[[datetime.now(),
+                                                        '-Sell',
+                                                        fill_sz,
+                                                        last_close,
+                                                        exec_val,
+                                                        fill_fees,
+                                                        stop_loss,
+                                                        min_sell_price,
+                                                        '',
+                                                        losses]])
                             break
                         time.sleep(30)
                     time_wait += 1
