@@ -4,6 +4,7 @@ import pandas as pd
 import talib as ta
 import numpy as np
 from datetime import datetime
+from pytz import timezone
 from playsound import playsound
 from scipy.stats import linregress
 from google.oauth2.service_account import Credentials
@@ -34,6 +35,7 @@ def get_sloppy(array):
     return slope
 
 def main():
+    tz = timezone('EST')
     prod_id = 'ADA-USD'
     secs = '60'
     portfolio = 100.00
@@ -84,7 +86,7 @@ def main():
                             portfolio -= fill_fees
                             buying = False
                             stop_loss = dataf['fib-1.0'][1] 
-                            sheet1.append_rows(values=[[str(datetime.now()),
+                            sheet1.append_rows(values=[[str(datetime.now(tz)),
                                                         'Buy',
                                                         fill_sz,
                                                         last_close,
@@ -127,7 +129,7 @@ def main():
                             portfolio += exec_val
                             portfolio -= fill_fees
                             wins +=1
-                            sheet1.append_rows(values=[[str(datetime.now()),
+                            sheet1.append_rows(values=[[str(datetime.now(tz)),
                                                         '+Sell',
                                                         fill_sz,
                                                         last_close,
@@ -162,7 +164,7 @@ def main():
                             portfolio += exec_val
                             portfolio -= fill_fees
                             losses += 1
-                            sheet1.append_rows(values=[[str(datetime.now()),
+                            sheet1.append_rows(values=[[str(datetime.now(tz)),
                                                         '-Sell',
                                                         fill_sz,
                                                         last_close,

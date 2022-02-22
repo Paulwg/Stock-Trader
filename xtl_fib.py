@@ -3,6 +3,7 @@ import pandas as pd
 import talib as ta
 import gspread
 from datetime import datetime
+from pytz import timezone
 from playsound import playsound
 from google.oauth2.service_account import Credentials
 
@@ -24,6 +25,7 @@ sheet1 = google_sh.get_worksheet(11)
 def main():
 
     #presets
+    tz = timezone('EST')
     product_id = 'MATIC-USD'
     seconds = '300'
     portfolio = 100.00
@@ -126,7 +128,7 @@ def main():
                     fill_fees = submitted_order['fill_fees']
                     fill_sz = submitted_order['filled_size']
                     print(f'\nExecuted Value: {exe_val}\nFill size: {fill_sz}\nFees: {fill_fees}\n')
-                    sheet1.append_rows(values=[[str(datetime.now()),
+                    sheet1.append_rows(values=[[str(datetime.now(tz)),
                                                 submitted_order["side"],
                                                 fill_sz,
                                                 last_close,
