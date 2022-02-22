@@ -1,10 +1,11 @@
 import time
-from datetime import datetime
+import gspread
 import pandas as pd
 import talib as ta
 import numpy as np
+from datetime import datetime
+from playsound import playsound
 from scipy.stats import linregress
-import gspread
 from google.oauth2.service_account import Credentials
 
 import CoinbaseAuth as CA
@@ -90,6 +91,7 @@ def main():
                                                         exec_val,
                                                         fill_fees,
                                                         stop_loss]])
+                            playsound("./sounds/Mario lets go.m4a")
                             break
                     time_wait += 1
                     if time_wait > 59:
@@ -134,6 +136,7 @@ def main():
                                                         stop_loss,
                                                         min_sell_price,
                                                         wins]])
+                            playsound('./sounds/funny_yay.m4a')
                             break
                     time_wait += 1
                     if time_wait > 59:
@@ -169,6 +172,7 @@ def main():
                                                         min_sell_price,
                                                         '',
                                                         losses]])
+                            playsound("./sounds/funny_no.mp3")
                             break
                     time_wait += 1
                     if time_wait > 59:

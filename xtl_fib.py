@@ -1,8 +1,9 @@
 import time
-from datetime import datetime
 import pandas as pd
 import talib as ta
 import gspread
+from datetime import datetime
+from playsound import playsound
 from google.oauth2.service_account import Credentials
 
 import CoinbaseAuth as CA
@@ -145,6 +146,7 @@ def main():
                         portfolio -= float(exe_val)
                         bought_val = float(exe_val)
                         sell_shares = float(fill_sz)
+                        playsound("./sounds/Mario lets go.m4a")
                         
                     if submitted_order["side"] == "sell":
                         print("Sell order Finished")
@@ -155,8 +157,10 @@ def main():
                         sold_val = float(exe_val)
                         if sold_val > bought_val:
                             wins += 1
+                            playsound('./sounds/funny_yay.m4a')
                         else:
                             losses += 1
+                            playsound("./sounds/funny_no.mp3")
 
                 else:
                     time_wait += 1
