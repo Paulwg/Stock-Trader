@@ -30,7 +30,7 @@ def get_sloppy(array):
     return slope
 
 def main():
-    capital_gains_tax = 0.27
+    # capital_gains_tax = 0.25
     prod_id = 'ADA-USD'
     secs = '60'
     portfolio = 100.00
@@ -107,11 +107,13 @@ def main():
             last_close = round(dataf[4][0],6)
             
             #minimum price to submit sell
-            min_sell_price = (((desired_gain + fill_fees + exec_val 
-                                - (exec_val * capital_gains_tax)
-                                - (fill_fees * capital_gains_tax)) 
-                                / (buy_shares * (1 - capital_gains_tax))))
+            # OLD
+            # min_sell_price = (((desired_gain + fill_fees + exec_val 
+            #                     - (exec_val * capital_gains_tax)
+            #                     - (fill_fees * capital_gains_tax)) 
+            #                     / (buy_shares * (1 - capital_gains_tax))))
 
+            min_sell_price = (desired_gain + (fill_fees * 2) + exec_val) / fill_sz
             time_wait = 0
 
             if last_close > min_sell_price:
