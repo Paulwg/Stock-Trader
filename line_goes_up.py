@@ -96,6 +96,7 @@ def main():
                             playsound("./sounds/Mario lets go.m4a")
                             break
                     time_wait += 1
+                    time.sleep(1)
                     if time_wait > 59:
                         CA.cancel_order(order)
                         break
@@ -141,6 +142,7 @@ def main():
                             playsound('./sounds/funny_yay.m4a')
                             break
                     time_wait += 1
+                    time.sleep(1)
                     if time_wait > 59:
                         CA.cancel_order(order)
                         selling = False
@@ -177,6 +179,7 @@ def main():
                             playsound("./sounds/funny_no.mp3")
                             break
                     time_wait += 1
+                    time.sleep(1)
                     if time_wait > 59:
                         CA.cancel_order(order)
                         selling = False
