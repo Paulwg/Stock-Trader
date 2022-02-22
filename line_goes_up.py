@@ -64,7 +64,7 @@ def main():
                 purchase_power = portfolio * bet_sz
                 buy_shares = round(purchase_power / last_close,0)
                 response = CA.submit_order('buy',prod_id,last_close,buy_shares)
-                time.sleep(3)
+                time.sleep(1)
                 order = response["id"]
                 time_wait = 0
 
@@ -89,37 +89,26 @@ def main():
                                                         fill_fees,
                                                         stop_loss]])
                             break
-                        time.sleep(30)
                     time_wait += 1
-                    time.sleep(2)
-                    if time_wait > 45:
+                    if time_wait > 59:
                         CA.cancel_order(order)
                         break
             else:
-                print(f'{datetime.now()}  Slope: {round(S3,4)}  Portfolio: {round(portfolio,4)} ')
-                print(f'Trades: {wins+losses}  Wins: {wins}  Losses: {losses}')
-                time.sleep(int(secs)+1)
+                print(f'{datetime.now()}  Slope: {round(S3,4)}  Portfolio: {round(portfolio,4)}  Wins: {wins}  Losses: {losses}')
+                time.sleep(int(secs))
 
 
         selling = True
         while selling:
             dataf = get_prod(prod_id,secs)
             last_close = round(dataf[4][0],6)
-            
-            #minimum price to submit sell
-            # OLD
-            # min_sell_price = (((desired_gain + fill_fees + exec_val 
-            #                     - (exec_val * capital_gains_tax)
-            #                     - (fill_fees * capital_gains_tax)) 
-            #                     / (buy_shares * (1 - capital_gains_tax))))
-
             min_sell_price = (desired_gain + (fill_fees * 2) + exec_val) / fill_sz
             time_wait = 0
 
             if last_close > min_sell_price:
                 print(f'Target price triggered: {last_close}')
                 response = CA.submit_order('sell',prod_id,last_close,fill_sz)
-                time.sleep(3)
+                time.sleep(1)
                 order = response["id"]
             
                 while True:
@@ -144,10 +133,8 @@ def main():
                                                         min_sell_price,
                                                         wins]])
                             break
-                        time.sleep(30)
                     time_wait += 1
-                    time.sleep(2)
-                    if time_wait > 45:
+                    if time_wait > 59:
                         CA.cancel_order(order)
                         selling = False
                         break
@@ -155,7 +142,7 @@ def main():
             elif last_close < stop_loss:
                 print(f'Stop loss triggered: {last_close}')
                 response = CA.submit_order('sell',prod_id,last_close,fill_sz)
-                time.sleep(3)
+                time.sleep(1)
                 order = response["id"]
             
                 while True:
@@ -181,20 +168,15 @@ def main():
                                                         '',
                                                         losses]])
                             break
-                        time.sleep(30)
                     time_wait += 1
-                    time.sleep(2)
-                    if time_wait > 45:
+                    if time_wait > 59:
                         CA.cancel_order(order)
                         selling = False
                         break
             else:
                 print(f'{datetime.now()}  Last: {last_close} < Min Sell: {min_sell_price}')
-                print(f'Portfolio: {round(portfolio,4)}')
-                print(f'Trades: {wins+losses}  Wins: {wins}  Losses: {losses}')
-                time.sleep(int(secs)+1)
-
-        print(f'Time: {datetime.now()}\tPortfolio: {portfolio}')
+                print(f'Portfolio: {round(portfolio,4)}  Wins: {wins}  Losses: {losses}')
+                time.sleep(int(secs))
 
 
 if __name__ == '__main__':

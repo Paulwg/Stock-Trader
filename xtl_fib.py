@@ -1,5 +1,6 @@
 import time
 from datetime import datetime
+from more_itertools import last
 import pandas as pd
 import talib as ta
 import gspread
@@ -8,8 +9,7 @@ from google.oauth2.service_account import Credentials
 import CoinbaseAuth as CA
 import product
 
-#note: may need to begin execution closer to close of the most recent candle
-
+#logging to google sheets
 scope = ['https://www.googleapis.com/auth/spreadsheets',
         'https://www.googleapis.com/auth/drive']
 creds = Credentials.from_service_account_file("fintechpass.json", scopes=scope)
@@ -19,7 +19,6 @@ sheet1 = google_sh.get_worksheet(11)
 
 def main():
 
-    # pd.set_option('display.max_rows', 301)
     #presets
     product_id = 'MATIC-USD'
     seconds = '300'
@@ -33,12 +32,11 @@ def main():
     order_id = "" 
     sell_shares = 0
     time_wait = 0
-
     wins = 0
     losses = 0
 
     while True:
-        #mmmdata
+        # mmm data
         data = product.candles(product_id, seconds)
         df = pd.read_json(data)
 
@@ -49,17 +47,15 @@ def main():
 
         df = df.iloc[::-1]
 
-        ###XTL
-        #lookback period
-        prd = 35
+        prd = 35 # lookback period
         #cci measures the current price level relative to an average price level over a given period of time
         df['cciNT'] = ta.CCI(df['high'],df['low'],df['close'],timeperiod=prd)
 
-        #preset value from tradingview, not sure why 37 specifically
+        #threshold for bull/bear measurement
         fixed_value = 37
-
         df['mark'] = df.apply(lambda x : 'bear' if x['cciNT'] < -fixed_value
-                                            else( 'neutral' if -fixed_value <= x['cciNT'] and x['cciNT'] <= fixed_value
+                                                else( 'neutral' 
+                                                    if -fixed_value <= x['cciNT'] and x['cciNT'] <= fixed_value
                                                     else 'bull'),axis=1)
 
         #FIB
@@ -67,8 +63,9 @@ def main():
         df['HL2'] = df.apply(lambda x : (x['high']+x['low'])/2, axis=1)
         df['fib1.5'] = df.apply(lambda x : x['HL2'] + (1.5 * x['diff']), axis=1)
         df['fib-0.5'] = df.apply(lambda x : x['HL2'] + (-0.5 * x['diff']), axis=1)
+
+        # T3 MA will be used as dynamic trailing stop
         df['T3'] = ta.T3(df['close'],timeperiod=6,vfactor=0.7)
-        # df = df.iloc[::-1]
         df = df.dropna()
 
         #don't like the way this is implemented
@@ -83,25 +80,23 @@ def main():
         #     else:
         #         df.loc[i, 'fib_buy'] = False
 
-        #done this way for backtesting purposes
         # df['buy_signal'] = df.apply(lambda x : True if x['mark'] == 'bull'
         #                                             and x['fib_buy'] == True
         #                                             else False, axis=1)
 
-        last_close = round(df['close'][0],6) # use most recent
+        last_close = round(df['close'][0],6)
         purchase_power = portfolio * bet_size
         buy_shares = round(purchase_power / last_close,0)
         trailing_stop = df['T3'][0]
 
         if not holding and ready_buy:
-            #if df['buy_signal'][0] == True: OLD
             if df['close'][0] >= df['fib1.5'][1] and df['mark'][0] == 'bull' :
                 print(f'\n{datetime.now()} : BUY')
                 side = 'buy'
                 response = CA.submit_order(side,product_id,last_close,buy_shares)
                 order_id = response["id"]
                 initial_stop = df['fib-0.5'][1] # use previous
-                print(f'Initial Stop: {initial_stop}  Trailing Stop: {trailing_stop}\n')
+                print(f'Last Close: {last_close}  Initial Stop: {initial_stop}  Trailing Stop: {trailing_stop}\n')
                 holding = True
                 ready_buy = False
                 iterations = 0
@@ -109,8 +104,7 @@ def main():
         elif holding and ready_sell:
             if (last_close < initial_stop and iterations == 0) or (last_close < trailing_stop and iterations > 0):
                 print(f'\n{datetime.now()} : SELL')
-                print(f'Last Close: {last_close}')
-                print(f'Initial Stop: {initial_stop}  Trailing Stop: {trailing_stop}\n')
+                print(f'Last Close: {last_close}  Initial Stop: {initial_stop}  Trailing Stop: {trailing_stop}\n')
                 side = "sell"
                 response = CA.submit_order(side,product_id,last_close,sell_shares)
                 order_id = response['id']
@@ -167,15 +161,14 @@ def main():
                         if ready_buy:
                             ready_sell = True
                             holding = True
-                        elif ready_sell:
+                        else:
                             ready_buy = True
                             holding = False
-                        # sheet1.delete_rows(sheet1.row_count())
 
 
         print(f'Time: {datetime.now()}\tPortfolio: {portfolio}')
         print(f'Trades: {wins+losses}  Wins: {wins}  Losses: {losses}')
-        time.sleep(int(seconds)+1)
+        time.sleep(int(seconds))
 
 if __name__ == '__main__':
     main()
