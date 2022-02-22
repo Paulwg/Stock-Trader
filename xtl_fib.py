@@ -1,6 +1,5 @@
 import time
 from datetime import datetime
-from more_itertools import last
 import pandas as pd
 import talib as ta
 import gspread
@@ -8,6 +7,10 @@ from google.oauth2.service_account import Credentials
 
 import CoinbaseAuth as CA
 import product
+
+'''
+    Auto trade based on Fibonnaci extension, XTL, and CCI
+'''
 
 #logging to google sheets
 scope = ['https://www.googleapis.com/auth/spreadsheets',
@@ -51,6 +54,7 @@ def main():
         #cci measures the current price level relative to an average price level over a given period of time
         df['cciNT'] = ta.CCI(df['high'],df['low'],df['close'],timeperiod=prd)
 
+        ###XTL
         #threshold for bull/bear measurement
         fixed_value = 37
         df['mark'] = df.apply(lambda x : 'bear' if x['cciNT'] < -fixed_value
@@ -166,8 +170,7 @@ def main():
                             holding = False
 
 
-        print(f'Time: {datetime.now()}\tPortfolio: {portfolio}')
-        print(f'Trades: {wins+losses}  Wins: {wins}  Losses: {losses}')
+        print(f'Time: {datetime.now()}\tPortfolio: {portfolio}  Wins: {wins}  Losses: {losses}')
         time.sleep(int(seconds))
 
 if __name__ == '__main__':

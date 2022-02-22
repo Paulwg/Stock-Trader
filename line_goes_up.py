@@ -1,7 +1,5 @@
-from curses import window
 import time
 from datetime import datetime
-from more_itertools import last
 import pandas as pd
 import talib as ta
 import numpy as np
@@ -12,6 +10,11 @@ from google.oauth2.service_account import Credentials
 import CoinbaseAuth as CA
 import product
 
+'''
+    Auto trade based purely on the slope of moving average as indicator
+'''
+
+# logging to google sheets
 scope = ['https://www.googleapis.com/auth/spreadsheets',
         'https://www.googleapis.com/auth/drive']
 creds = Credentials.from_service_account_file("fintechpass.json", scopes=scope)
@@ -30,7 +33,6 @@ def get_sloppy(array):
     return slope
 
 def main():
-    # capital_gains_tax = 0.25
     prod_id = 'ADA-USD'
     secs = '60'
     portfolio = 100.00
@@ -44,12 +46,12 @@ def main():
             dataf = get_prod(prod_id,secs)
             last_close = round(dataf[4][0],6)
             dataf = dataf.iloc[::-1]
-            # dataf['kama'] = ta.KAMA(dataf[4],timeperiod=20)
+            # dataf['kama'] = ta.KAMA(dataf[4],timeperiod=20) #Not reactive enough
             dataf['T3'] = ta.T3(dataf[4],timeperiod=6,vfactor=0.7)
             dataf['slope'] = dataf['T3'].rolling(window=20,min_periods=20).apply(get_sloppy, raw=True)
             dataf['diff'] = dataf.apply(lambda x : x[2] - x[1], axis=1)
             dataf['HL2'] = dataf.apply(lambda x : (x[2]+x[1])/2, axis=1)
-            dataf['fib-1.0'] = dataf.apply(lambda x : x['HL2'] + (-1 * x['diff']), axis=1) #was -0.5
+            dataf['fib-1.0'] = dataf.apply(lambda x : x['HL2'] + (-1 * x['diff']), axis=1) #was -0.5, but with smaller prices it was not reliable
             dataf = dataf.dropna()
 
             S3 = ((dataf['slope'][0] + dataf['slope'][1] + dataf['slope'][2]) / 3) * 10000
