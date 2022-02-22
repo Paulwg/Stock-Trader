@@ -35,8 +35,8 @@ def main():
     order_id = "" 
     sell_shares = 0
     time_wait = 0
-    wins = 0
-    losses = 0
+    wins = 1
+    losses = 1
 
     while True:
         # mmm data
