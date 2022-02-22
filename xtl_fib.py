@@ -38,8 +38,8 @@ def main():
     order_id = "" 
     sell_shares = 0
     time_wait = 0
-    wins = 1
-    losses = 1
+    wins = 0
+    losses = 0
 
     while True:
         # mmm data
@@ -128,17 +128,6 @@ def main():
                     fill_fees = submitted_order['fill_fees']
                     fill_sz = submitted_order['filled_size']
                     print(f'\nExecuted Value: {exe_val}\nFill size: {fill_sz}\nFees: {fill_fees}\n')
-                    sheet1.append_rows(values=[[str(datetime.now(tz)),
-                                                submitted_order["side"],
-                                                fill_sz,
-                                                last_close,
-                                                exe_val,
-                                                fill_fees,
-                                                initial_stop,
-                                                trailing_stop,
-                                                wins,
-                                                losses]])
-
 
                     if submitted_order["side"] == "buy":
                         print("Buy order Finished")
@@ -163,6 +152,17 @@ def main():
                         else:
                             losses += 1
                             playsound("./sounds/funny_no.mp3")
+
+                    sheet1.append_rows(values=[[str(datetime.now(tz)),
+                                                submitted_order["side"],
+                                                fill_sz,
+                                                last_close,
+                                                exe_val,
+                                                fill_fees,
+                                                initial_stop,
+                                                trailing_stop,
+                                                wins,
+                                                losses]])
 
                 else:
                     time_wait += 1
