@@ -44,8 +44,9 @@ def main():
             dataf = get_prod(prod_id,secs)
             last_close = round(dataf[4][0],6)
             dataf = dataf.iloc[::-1]
-            dataf['kama'] = ta.KAMA(dataf[4],timeperiod=20)
-            dataf['slope'] = dataf['kama'].rolling(window=20,min_periods=20).apply(get_sloppy, raw=True)
+            # dataf['kama'] = ta.KAMA(dataf[4],timeperiod=20)
+            dataf['T3'] = ta.T3(dataf[4],timeperiod=6,vfactor=0.7)
+            dataf['slope'] = dataf['T3'].rolling(window=20,min_periods=20).apply(get_sloppy, raw=True)
             dataf['diff'] = dataf.apply(lambda x : x[2] - x[1], axis=1)
             dataf['HL2'] = dataf.apply(lambda x : (x[2]+x[1])/2, axis=1)
             dataf['fib-1.0'] = dataf.apply(lambda x : x['HL2'] + (-1 * x['diff']), axis=1) #was -0.5
@@ -80,7 +81,7 @@ def main():
                             portfolio -= fill_fees
                             buying = False
                             stop_loss = dataf['fib-1.0'][1] 
-                            sheet1.append_rows(values=[[datetime.now(),
+                            sheet1.append_rows(values=[[str(datetime.now()),
                                                         'Buy',
                                                         fill_sz,
                                                         last_close,
@@ -131,7 +132,7 @@ def main():
                             portfolio += exec_val
                             portfolio -= fill_fees
                             wins +=1
-                            sheet1.append_rows(values=[[datetime.now(),
+                            sheet1.append_rows(values=[[str(datetime.now()),
                                                         '+Sell',
                                                         fill_sz,
                                                         last_close,
@@ -146,6 +147,7 @@ def main():
                     time.sleep(2)
                     if time_wait > 45:
                         CA.cancel_order(order)
+                        selling = False
                         break
 
             elif last_close < stop_loss:
@@ -166,7 +168,7 @@ def main():
                             portfolio += exec_val
                             portfolio -= fill_fees
                             losses += 1
-                            sheet1.append_rows(values=[[datetime.now(),
+                            sheet1.append_rows(values=[[str(datetime.now()),
                                                         '-Sell',
                                                         fill_sz,
                                                         last_close,
@@ -182,6 +184,7 @@ def main():
                     time.sleep(2)
                     if time_wait > 45:
                         CA.cancel_order(order)
+                        selling = False
                         break
             else:
                 print(f'{datetime.now()}  Last: {last_close} < Min Sell: {min_sell_price}')

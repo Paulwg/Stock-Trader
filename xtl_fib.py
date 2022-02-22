@@ -127,7 +127,7 @@ def main():
                     fill_fees = submitted_order['fill_fees']
                     fill_sz = submitted_order['filled_size']
                     print(f'\nExecuted Value: {exe_val}\nFill size: {fill_sz}\nFees: {fill_fees}\n')
-                    sheet1.append_rows(values=[[datetime.now(),
+                    sheet1.append_rows(values=[[str(datetime.now()),
                                                 submitted_order["side"],
                                                 fill_sz,
                                                 last_close,
