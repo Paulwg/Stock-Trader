@@ -54,14 +54,14 @@ def main():
             dataf['slope'] = dataf['T3'].rolling(window=20,min_periods=20).apply(get_sloppy, raw=True)
             dataf['diff'] = dataf.apply(lambda x : x[2] - x[1], axis=1)
             dataf['HL2'] = dataf.apply(lambda x : (x[2]+x[1])/2, axis=1)
-            dataf['fib-1.0'] = dataf.apply(lambda x : x['HL2'] + (-1 * x['diff']), axis=1) #was -0.5, but with smaller prices it was not reliable
+            dataf['fib-1.0'] = dataf.apply(lambda x : x['HL2'] + (-1.5 * x['diff']), axis=1) #was -0.5, but with smaller prices it was not reliable
             dataf = dataf.dropna()
 
-            S3 = ((dataf['slope'][0] + dataf['slope'][1] + dataf['slope'][2]) / 3) * 10000
             #pos slp 
-            if S3 > 3:
-                print(f'{datetime.now()}  Slope: {S3} == BUY')
-                if S3 > 6:
+            slope = dataf['slope'][0] * 10000
+            if slope > 3:
+                print(f'{datetime.now()}  Slope: {slope} == BUY')
+                if slope > 6:
                     bet_sz = 0.04
                 else:
                     bet_sz = 0.02
@@ -100,7 +100,7 @@ def main():
                         CA.cancel_order(order)
                         break
             else:
-                print(f'{datetime.now()}  Slope: {round(S3,4)}  Portfolio: {round(portfolio,4)}  Wins: {wins}  Losses: {losses}')
+                print(f'{datetime.now()}  Slope: {round(slope,4)}  Portfolio: {round(portfolio,4)}  Wins: {wins}  Losses: {losses}')
                 time.sleep(int(secs))
 
 
