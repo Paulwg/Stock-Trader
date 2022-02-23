@@ -37,7 +37,7 @@ def get_sloppy(array):
 def main():
     tz = timezone('EST')
     prod_id = 'ADA-USD'
-    secs = '60'
+    secs = '300'
     portfolio = 100.00
     order = ''
     wins = 0
@@ -59,9 +59,9 @@ def main():
 
             #pos slp 
             slope = dataf['slope'][0] * 10000
-            if slope > 3:
+            if slope > 4:
                 print(f'{datetime.now()}  Slope: {slope} == BUY')
-                if slope > 6:
+                if slope > 7:
                     bet_sz = 0.04
                 else:
                     bet_sz = 0.02
