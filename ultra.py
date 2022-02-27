@@ -14,6 +14,7 @@ import CoinbaseAuth as CA
 import product
 
 # logging to google sheets
+#TODO: have experienced failure causing program to crash. consider local copy as replacement/backup.
 scope = ['https://www.googleapis.com/auth/spreadsheets',
         'https://www.googleapis.com/auth/drive']
 creds = Credentials.from_service_account_file("fintechpass.json", scopes=scope)
