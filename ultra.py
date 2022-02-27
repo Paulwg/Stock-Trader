@@ -116,6 +116,12 @@ def get_fear_count(df,period):
 def get_greed_count(df,period):
     return df.tail(period).sum()
 
+def order_book_flow(df):
+    '''
+    TODO: include real time order book analysis to compliment technical analysis.
+    '''
+    pass
+
 #########################
 ### Additional Tools ####
 #########################
