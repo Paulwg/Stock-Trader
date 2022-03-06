@@ -1,12 +1,12 @@
 import time
 import gspread
 import threading
-from datetime import datetime
 import pandas as pd
 import numpy as np
 import talib as ta
-from scipy import ndimage, signal
+from datetime import datetime
 from pytz import timezone
+from scipy import ndimage, signal
 from scipy.stats import linregress
 from google.oauth2.service_account import Credentials
 
@@ -161,7 +161,11 @@ def buy(fn_smll_tmfrm,product_name,fib_target,shares,seconds):
         # monitoring 60 second candles waiting for buy threshold to be met.
         quicker_timeframe = get_data(fn_smll_tmfrm)
         if quicker_timeframe[4][0] >= fib_target:
+            print(f'{datetime.now(tz)}  Buy target price met!')
             order_response = CA.submit_order('buy',product_name,fib_target,shares)
+            quicker_timeframe = quicker_timeframe.iloc[::-1]
+            atr = ta.ATR(quicker_timeframe[2],quicker_timeframe[1],quicker_timeframe[4],timeperiod=20)
+            initial_stop = quicker_timeframe[1].tail(10).mean() - atr
             time.sleep(1)
             
             while True:
@@ -170,12 +174,16 @@ def buy(fn_smll_tmfrm,product_name,fib_target,shares,seconds):
                     if 'settled' in submitted_order:
                         filled = submitted_order['settled']
                         if filled == True:
+                            print(f'{datetime.now(tz)}  Successfully entered a position.')
                             buying = False
+                            # represented as negative value to remove holdings from available capital
                             cost = -submitted_order['executed_value']-submitted_order['filled_fees']
-                            sheet1.append_row(values=[['','Buy',str(datetime.now(tz)),cost]])
+                            sheet1.append_row(values=[['','',str(datetime.now(tz)),'Buy',cost]])
 
                             # call sell from here so that sell is only called if a trade has been made
-                            t4 = threading.Thread(target=sell,args=(fn_smll_tmfrm,product_name,fib_target,order_response['id']))
+                            t4 = threading.Thread(target=sell,args=(fn_smll_tmfrm,product_name,initial_stop,fib_target,shares))
+                            # until ready to hold concurrent positions wait for sell to finish
+                            t4.join()
                             break
 
                     waiting_count += 1
@@ -189,32 +197,88 @@ def buy(fn_smll_tmfrm,product_name,fib_target,shares,seconds):
                 buying = False
         time.sleep(61) # quicker_timeframe + 1
 
-def sell(fn_smll_tmfrm,product_name,fib_target,order_id):
-    selling = True
-    waiting_count = 0
-    while selling:
-        quicker_timeframe = get_data(fn_smll_tmfrm)
+def sell(fn_smll_tmfrm,product_name,initial_stop,bought_price,shares):
+    selling_uptrend = True
+    selling_below_avg = True
+    quicker_timeframe = get_data(fn_smll_tmfrm)
+    quicker_timeframe = quicker_timeframe.iloc[::-1]
+    close = quicker_timeframe[4]
+    trailing_stop = ta.T3(close,20,0.1)
+    order_response = ''
+    time_wait = 0
 
-    '''
-    Now that we have a position
-        initial stop = (low/min of the previous n candles) - ATR
-        OR
-        initial stop = -0.5 Fib Ext of previous candle
-        WHICHEVER is less
-        THEN as price (hopefully) rises:
-        trailing stop takes over after price exceeds minimum sell value.
-        trailing stop = tight smoothed MA
-    '''
+    if bought_price > trailing_stop[0]: # bought when above moving average
+        while selling_uptrend:
+            quicker_timeframe = get_data(fn_smll_tmfrm)
+            quicker_timeframe = quicker_timeframe.iloc[::-1]
+            close = quicker_timeframe[4]
+            trailing_stop = ta.T3(close,20,0.1)
 
-def cancel():
-    pass
+            if not order_response:
+                if close[0] <= initial_stop:
+                    print(f'{datetime.now(tz)}  Initial stop breached...')
+                    order_response = CA.submit_order('sell',product_name,close[0],shares)
+                elif close[0] <= trailing_stop[0]:
+                    print(f'{datetime.now(tz)}  Trailing stop triggered, bought above moving average.')
+                    order_response = CA.submit_order('sell',product_name,close[0],shares)
+                else:
+                    time.sleep(61)
+            
+            if order_response:
+                submitted_order = CA.get_single_order(order_response['id'])
+                if 'settled' in submitted_order:
+                    print(f'{datetime.now(tz)}  Successfully exited position.')
+                    exec_val = float(submitted_order['executed_value'])
+                    fill_fees = float(submitted_order['fill_fees'])
+                    sell_value = exec_val - fill_fees
+                    sheet1.append_rows(values=[['','',str(datetime.now(tz)),'Sell',sell_value]])
+                    selling_uptrend = False
+                else:
+                    time_wait += 1
+                    time.sleep(1)
+                    if time_wait > 120:
+                        CA.cancel_order(order_response['id'])
+                        order_response = ''
+                        time_wait = 0
 
-def check():
-    pass
+    else: # bought when below moving average
+        while selling_below_avg:
+            quicker_timeframe = get_data(fn_smll_tmfrm)
+            quicker_timeframe = quicker_timeframe.iloc[::-1]
+            close = quicker_timeframe[4]
+            trailing_stop = ta.T3(close,20,0.1)
+
+            if not order_response:
+                if close[0] <= initial_stop:
+                    print(f'{datetime.now(tz)}  Initial stop breached...')
+                    order_response = CA.submit_order('sell',product_name,close[0],shares)
+                elif close[0] >= trailing_stop[0]:
+                    print(f'{datetime.now(tz)}  Trailing stop triggered, bought below moving average.')
+                    order_response = CA.submit_order('sell',product_name,close[0],shares)
+                else:
+                    time.sleep(61)
+
+            if order_response:
+                submitted_order = CA.get_single_order(order_response['id'])
+                if 'settled' in submitted_order:
+                    print(f'{datetime.now(tz)}  Successfully exited position.')
+                    exec_val = float(submitted_order['executed_value'])
+                    fill_fees = float(submitted_order['fill_fees'])
+                    sell_value = exec_val - fill_fees
+                    sheet1.append_rows(values=[['','',str(datetime.now(tz)),'Sell',sell_value]])
+                    selling_below_avg = False
+                else:
+                    time_wait += 1
+                    time.sleep(1)
+                    if time_wait > 120:
+                        CA.cancel_order(order_response['id'])
+                        order_response = ''
+                        time_wait = 0
+
 
 def main():
-    product_name = 'BTC-USD'
-    seconds = '300' #string for get requests
+    product_name = 'MATIC-USD'
+    seconds = '900' #string for get requests
     file_name = f'./history/{product_name}'
     fn_smll_tmfrm = f'{file_name}_60s'
 
@@ -228,7 +292,7 @@ def main():
     t2.start()
     
     while True:
-        allotted = sheet1.cell('A1').value
+        allotted = float(sheet1.cell(row=2,col=1).value)
         bet_size = 0.1 #%
         largest_bet = allotted * bet_size
         #TODO: Research implementing a modified kelly criterion model for gauging bet size.
@@ -245,25 +309,15 @@ def main():
 
         # currently fear threshold is 30%
         if fear < 9 and most_recent_slope > 4 and xtl_outcome == 'bull':
+            print(f'{datetime.now(tz)}  Buy conditions met.')
             fib_target = td['fib1.5'][0]
             shares = round(largest_bet / fib_target,0)
             t3 = threading.Thread(target=buy,args=(fn_smll_tmfrm,product_name,fib_target,shares,seconds))
             t3.start()
             t3.join()
-
-            '''
-            Summary of what I have done so far
-            -thread that continuously retrieves market data for one long and one short timeframe on the same product
-
-            -while loop
-                -get long timeframe data from local file
-
-                -if fear, slope, xtl all meet condition then move to buy phase
-
-                    -thread that continuosly reads short term market data waiting for FIB1.5 target
-                    this thread will run for the duration of the long term candle period and then exit if Fib target not met
-
-            '''
+        else:
+            print(f'{datetime.now(tz)}  Capital: {allotted}')
+            time.sleep(int(seconds))
 
 
 if __name__ == '__main__':
