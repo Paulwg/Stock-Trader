@@ -13,6 +13,23 @@ from google.oauth2.service_account import Credentials
 import CoinbaseAuth as CA
 import product
 
+#TODO: fix this shit...
+'''
+2022-03-15 20:04:44.967866-05:00  fear: 22  most recent slope: -0.00016548151803667186  xtl: bear  Capital: 196.0
+2022-03-15 20:09:45.635815-05:00  fear: 22  most recent slope: -0.00016548151803667186  xtl: bear  Capital: 196.0
+2022-03-15 20:14:46.198578-05:00  fear: 22  most recent slope: -0.00016548151803667186  xtl: bear  Capital: 196.0
+2022-03-15 20:19:46.755238-05:00  fear: 22  most recent slope: -0.00016548151803667186  xtl: bear  Capital: 196.0
+2022-03-15 20:24:47.685280-05:00  fear: 22  most recent slope: -0.00016548151803671296  xtl: bear  Capital: 196.0
+2022-03-15 20:29:48.226993-05:00  fear: 22  most recent slope: -0.00016548151803667186  xtl: bear  Capital: 196.0
+2022-03-15 20:34:48.887209-05:00  fear: 22  most recent slope: -0.00016548151803667186  xtl: bear  Capital: 196.0
+2022-03-15 20:39:49.453086-05:00  fear: 22  most recent slope: -0.00016548151803667186  xtl: bear  Capital: 196.0
+2022-03-15 20:44:49.962858-05:00  fear: 22  most recent slope: -0.00016548151803667186  xtl: bear  Capital: 196.0
+2022-03-15 20:49:50.701622-05:00  fear: 22  most recent slope: -0.00016548151803667186  xtl: bear  Capital: 196.0
+2022-03-15 20:54:51.216284-05:00  fear: 22  most recent slope: -0.00016548151803667186  xtl: bear  Capital: 196.0
+
+notice that the values are just repeating.
+'''
+
 # logging to google sheets
 #TODO: have experienced failure causing program to crash. consider local copy as replacement/backup.
 scope = ['https://www.googleapis.com/auth/spreadsheets',
