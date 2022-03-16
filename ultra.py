@@ -113,9 +113,6 @@ def get_fear_count(df,period):
     fear_count = df.filter(regex='fear')
     return fear_count.tail(period).sum()
 
-def get_greed_count(df,period):
-    return df.tail(period).sum()
-
 def order_book_flow(df):
     '''
     TODO: include real time order book analysis to compliment technical analysis.
@@ -278,7 +275,8 @@ def sell(fn_smll_tmfrm,product_name,initial_stop,bought_price,shares):
 
 def main():
     product_name = 'MATIC-USD'
-    seconds = '900' #string for get requests
+    # 60, 300, 900, 3600, 21600, 86400
+    seconds = '300' #string for get requests
     file_name = f'./history/{product_name}'
     fn_smll_tmfrm = f'{file_name}_60s'
 
@@ -308,7 +306,7 @@ def main():
         xtl_outcome = td['XTL'][0]
 
         # currently fear threshold is 30%
-        if fear < 9 and most_recent_slope > 4 and xtl_outcome == 'bull':
+        if fear < 9 and most_recent_slope > 0.0005 and xtl_outcome == 'bull':
             print(f'{datetime.now(tz)}  Buy conditions met.')
             fib_target = td['fib1.5'][0]
             shares = round(largest_bet / fib_target,0)
@@ -316,7 +314,7 @@ def main():
             t3.start()
             t3.join()
         else:
-            print(f'{datetime.now(tz)}  Capital: {allotted}')
+            print(f'{datetime.now(tz)}  fear: {fear}  most recent slope: {most_recent_slope}  xtl: {xtl_outcome}  Capital: {allotted}')
             time.sleep(int(seconds))
 
 
