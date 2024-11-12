@@ -13,7 +13,7 @@ from google.oauth2.service_account import Credentials
 import CoinbaseAuth as CA
 import product
 
-#TODO: fix this shit...
+#TODO: unexpected behaviour...
 '''
 2022-03-15 20:04:44.967866-05:00  fear: 22  most recent slope: -0.00016548151803667186  xtl: bear  Capital: 196.0
 2022-03-15 20:09:45.635815-05:00  fear: 22  most recent slope: -0.00016548151803667186  xtl: bear  Capital: 196.0
